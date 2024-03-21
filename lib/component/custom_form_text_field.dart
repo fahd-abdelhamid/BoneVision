@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CustomTextFormField extends StatelessWidget {
   String? hint;
@@ -34,11 +36,11 @@ class CustomTextFormField extends StatelessWidget {
       validator: validate,
       decoration: InputDecoration(
           contentPadding:
-          const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+          EdgeInsets.symmetric(vertical: 12.h, horizontal: 12.w),
           hintText: hint,
           labelText: label,
           labelStyle:
-          TextStyle(fontSize: 18, color: Color(0xff38a7ab)),
+          GoogleFonts.prompt(fontSize: 18.sp, color: Color(0xff38a7ab)),
           floatingLabelBehavior: FloatingLabelBehavior.always,
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),

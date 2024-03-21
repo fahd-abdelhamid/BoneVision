@@ -2,14 +2,15 @@ import 'package:bonevision/component/custom_button.dart';
 import 'package:bonevision/screens/login_screen.dart';
 import 'package:bonevision/screens/register_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Container(
         // decoration: BoxDecoration(
@@ -25,53 +26,54 @@ class WelcomeScreen extends StatelessWidget {
                 style: TextStyle(
                     color: Color(0xffa9a9a9),
                     fontWeight: FontWeight.w500,
-                    fontSize: screenWidth * 0.065),
+                    fontSize: 20.w),
               ),
               RichText(
                 text: TextSpan(
                   children: [
                     TextSpan(
                       text: 'Bone',
-                      style: TextStyle(
+                      style: GoogleFonts.prompt(
                           color: Color(0xff97dfe3),
-                          fontWeight: FontWeight.bold,
-                          fontSize: screenWidth * 0.09),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 35.w),
                     ),
                     TextSpan(
                       text: 'Vision',
-                      style: TextStyle(
+                      style: GoogleFonts.prompt(
                           color: Color(0xffa9a9a9),
-                          fontWeight: FontWeight.bold,
-                          fontSize: screenWidth * 0.09),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 35.w),
                     ),
                   ],
                 ),
               ),
               Container(
-                height: screenHeight * 0.6,
-                width: screenWidth,
+                height: .5.sh,
+                width: 1.sw,
+                child: Image.asset("assets/images/3.png",fit: BoxFit.contain,),
               ),
               CustomButton(
                   radius: 20,
-                  screenWidth: screenWidth * 0.8,
-                  screenHeight: screenHeight * 0.075,
+                  screenWidth: 0.8.sw,
+                  screenHeight: 0.075.sh,
                   text: "Create Account",
                   onpressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const RegisterScreen()));
+                            builder: (context) => RegisterScreen()));
                   },
                   bColor: Color(0xff97dfe3),
                   tColor: Color(0xff232425),
-                  fontSize: screenWidth * 0.075),
+                  fontSize: 28.w),
               SizedBox(
-                height: screenHeight * 0.05,
+                height: 0.05.sh,
               ),
               CustomButton(
                   radius: 20,
-                  screenWidth: screenWidth * 0.8,
-                  screenHeight: screenHeight * 0.075,
+                  screenWidth: 0.8.sw,
+                  screenHeight: 0.075.sh,
                   text: "Login",
                   onpressed: () {
                     Navigator.push(
@@ -81,7 +83,7 @@ class WelcomeScreen extends StatelessWidget {
                   },
                   bColor: Color(0xff284448),
                   tColor: Color(0xffFAFAFA),
-                  fontSize: screenWidth * 0.075),
+                  fontSize: 32.w),
             ],
           ),
         ),

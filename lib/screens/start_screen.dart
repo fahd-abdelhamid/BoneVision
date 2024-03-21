@@ -1,6 +1,8 @@
 import 'package:bonevision/component/custom_button.dart';
 import 'package:bonevision/screens/welcome_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
@@ -13,8 +15,8 @@ class StartScreen extends StatelessWidget {
       body: Column(
         children: [
           Container(
-            width: screenWidth,
-            height: screenHeight * 0.2,
+            width: 1.sw,
+            height: 0.2.sh,
             decoration: BoxDecoration(
               color: Color(0xff97dfe3),
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(65)),
@@ -25,27 +27,33 @@ class StartScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text("WELCOME!",
-                      style: TextStyle(
+                      style: GoogleFonts.prompt(
                           color: Color(0xff232425),
                           fontWeight: FontWeight.bold,
-                          fontSize: screenWidth * 0.08148148148)),
+                          fontSize: 32.w)),
                   Text("Get your report immediately",
-                      style: TextStyle(
+                      style: GoogleFonts.prompt(
                           color: Color(0xff232425),
                           fontWeight: FontWeight.w500,
-                          fontSize: screenWidth * 0.05))
+                          fontSize: 18.w))
                 ],
               ),
             ),
           ),
           Container(
-            height: screenHeight * 0.6,
-            width: screenWidth,
-            child: Column(),
+            height: 425.h,
+            width: 1.sw,
+            child: Column(
+              children: [
+                Image.asset("assets/images/1.png",),
+                Container(height: 235.h,
+                    child: Image.asset("assets/images/2.png"))
+              ],
+            ),
           ),
           CustomButton(radius: 10,
-              screenWidth: screenWidth * 0.8,
-              screenHeight: screenHeight * 0.075,
+              screenWidth: 0.8.sw,
+              screenHeight: 50.h,
               text: "Let's Start",
               onpressed: () {
                 Navigator.push(context,
@@ -53,7 +61,7 @@ class StartScreen extends StatelessWidget {
               },
               bColor: Color(0xff97dfe3),
               tColor: Color(0xff232425),
-              fontSize: screenWidth * 0.1),
+              fontSize: 32.w),
           SizedBox(height: screenHeight * 0.03),
           RichText(
             text: TextSpan(
@@ -62,15 +70,15 @@ class StartScreen extends StatelessWidget {
                   text: 'Bone',
                   style: TextStyle(
                       color: Color(0xff97dfe3),
-                      fontWeight: FontWeight.bold,
-                      fontSize: screenWidth * 0.09),
+                      fontWeight: FontWeight.w700,
+                      fontSize: 35.w),
                 ),
                 TextSpan(
                   text: 'Vision',
-                  style: TextStyle(
+                  style: GoogleFonts.prompt(
                       color: Color(0xffa9a9a9),
-                      fontWeight: FontWeight.bold,
-                      fontSize: screenWidth * 0.09),
+                      fontWeight: FontWeight.w700,
+                      fontSize: 35.w),
                 ),
               ],
             ),

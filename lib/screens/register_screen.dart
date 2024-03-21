@@ -1,13 +1,18 @@
+import 'package:bonevision/bloc/login/login_cubit.dart';
 import 'package:bonevision/bloc/register_cubit.dart';
 import 'package:bonevision/component/custom_button.dart';
 import 'package:bonevision/component/custom_form_text_field.dart';
 import 'package:bonevision/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  RegisterScreen({super.key,this.user});
+  User? user;
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -33,18 +38,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _isPasswordObscured = !_isPasswordObscured;
     });
   }
-
+@override
+  void initState() {
+    if(LoginCubit.get(context).isExist==false){
+      emailController.text=widget.user?.email?? "";
+      usernameController.text=widget.user?.displayName??"";
+    }
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    double screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
     var cubit = RegisterCubit.get(context);
+
     return BlocConsumer<RegisterCubit, RegisterState>(
       listener: (context, state) {
         if (state is RegisterSuccessState) {
@@ -57,62 +62,62 @@ class _RegisterScreenState extends State<RegisterScreen> {
       },
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: const Color(0xfffafafa),
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.symmetric(horizontal: 8.w),
             child: ListView(children: [
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Container(width: screenWidth, height: screenHeight * 0.3,),
+                  Container(width: 1.sw, height: 180.h,
+                  child: Image.asset("assets/images/3.png"),),
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(16.0),
                     child: RichText(
                       text: TextSpan(
                         children: [
                           TextSpan(
                             text: 'Bone',
-                            style: TextStyle(
+                            style: GoogleFonts.prompt(
                                 color: Color(0xff97dfe3),
-                                fontWeight: FontWeight.bold,
-                                fontSize: screenWidth * 0.09),
+                                fontWeight: FontWeight.w700,
+                                fontSize: 35.w),
                           ),
                           TextSpan(
                             text: 'Vision',
-                            style: TextStyle(
+                            style: GoogleFonts.prompt(
                                 color: Color(0xffa9a9a9),
-                                fontWeight: FontWeight.bold,
-                                fontSize: screenWidth * 0.09),
+                                fontWeight: FontWeight.w700,
+                                fontSize: 35.w),
                           ),
                         ],
                       ),
                     ),
                   ),
                   Container(
-                    width: screenWidth * 0.8,
-                    margin: EdgeInsets.only(bottom: screenHeight * 0.02),
+                    width: 0.8.sw,
+                    margin: EdgeInsets.only(bottom: 15.h),
                     child: CustomTextFormField(
                       hint: "UserName",
                       controller: usernameController,
                       label: "UserName",
                       obscureText: false,
-                      readOnly: false,
+                      readOnly: LoginCubit.get(context).isExist==false?true:false,
                     ),
                   ),
                   Container(
-                    width: screenWidth * 0.8,
-                    margin: EdgeInsets.only(bottom: screenHeight * 0.02),
+                    width: 0.8.sw,
+                    margin: EdgeInsets.only(bottom: 15.h),
                     child: CustomTextFormField(
                       hint: "Email",
                       controller: emailController,
                       label: "Email",
                       obscureText: false,
-                      readOnly: false,
+                      readOnly: LoginCubit.get(context).isExist==false?true:false,
                     ),
                   ),
                   Container(
-                    width: screenWidth * 0.8,
-                    margin: EdgeInsets.only(bottom: screenHeight * 0.02),
+                    width: 0.8.sw,
+                    margin: EdgeInsets.only(bottom: 15.h),
                     child: CustomTextFormField(
                       hint: "Password",
                       controller: passwordController,
@@ -133,13 +138,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   DropdownMenu<String>(
-                      width: screenWidth * 0.8,
+                      width: 0.8.sw,
                       inputDecorationTheme: InputDecorationTheme(
                           floatingLabelBehavior: FloatingLabelBehavior.always,
                           constraints:
-                          BoxConstraints(maxHeight: screenHeight * 0.075),
+                          BoxConstraints(maxHeight: 42.5.h),
                           contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 10),
+                           EdgeInsets.symmetric(horizontal: 10.w),
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                               borderSide:
@@ -152,7 +157,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           "Gender",
-                          style: TextStyle(
+                          style: GoogleFonts.prompt(
                               fontSize: 18, color: const Color(0xff38a7ab)),
                         ),
                       ),
@@ -163,8 +168,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         print(genderController.text);
                       }),
                   Container(
-                    width: screenWidth * 0.8,
-                    margin: EdgeInsets.only(top: screenHeight * 0.02),
+                    width: 0.8.sw,
+                    margin: EdgeInsets.only(top: 15.h),
                     child: CustomTextFormField(controller: dateController,
                         icon: IconButton(
                             onPressed: () async {
@@ -186,19 +191,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         obscureText: false),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: screenHeight * 0.05),
+                    margin: EdgeInsets.only(top: 35.h),
                     child: CustomButton(
-                        screenWidth: screenWidth * 0.8,
-                        screenHeight: screenHeight * 0.075,
+                        screenWidth: 0.8.sw,
+                        screenHeight: 45.h,
                         text: "Register",
                         onpressed: () {
-                          cubit.registerUser(
-                              emailController.text, passwordController.text, usernameController.text, genderController.text,
-                              date);
+                          if (LoginCubit.get(context).isExist==false) {
+                            cubit.saveUser(
+                                emailController.text, passwordController.text, usernameController.text, genderController.text,
+                                date);
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginScreen()));
+                          }else{
+                            cubit.registerUser(
+                                emailController.text, passwordController.text, usernameController.text, genderController.text,
+                                date);
+                          }
                         },
                         bColor: Color(0xff97dfe3),
                         tColor: Color(0xff232425),
-                        fontSize: screenWidth * 0.075,
+                        fontSize: 32.w,
                         radius: 20),
                   ),
                 ],
@@ -208,8 +220,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   Text(
                     "Already have an account? ",
-                    style: TextStyle(
-                        color: Color(0xff232425), fontSize: screenWidth * 0.05),
+                    style: GoogleFonts.prompt(
+                        color: Color(0xff232425), fontSize: 18.w),
                   ),
                   TextButton(
                     onPressed: () {
@@ -217,9 +229,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                     child: Text(
                       "Login",
-                      style: TextStyle(
+                      style: GoogleFonts.prompt(fontWeight:FontWeight.w700,
                           color: Color(0xff38a7ab),
-                          fontSize: screenWidth * 0.06),
+                          fontSize: 20.w),
                     ),
                     style: ButtonStyle(
                       padding: MaterialStatePropertyAll(EdgeInsets.zero),
