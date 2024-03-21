@@ -77,7 +77,12 @@
                     screenWidth: 200.w,
                     screenHeight: 40.h,
                     text: "Help Center",
-                    onpressed: () {},
+                    onpressed: () {
+                      setState(() {
+                        _activeIndex=3;
+                      });
+                      Navigator.pop(context);
+                    },
                     bColor: Color(0xffd9d9d9),
                     tColor: Color(0xff232425),
                     fontSize: 20.w,
