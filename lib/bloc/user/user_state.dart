@@ -8,3 +8,6 @@ class GetUserDataState extends UserState {}
 class ReceiveUserNameSuccessState extends UserState {}
 class ReceiveUserNameLoadingState extends UserState {}
 class ReceiveUserNameErrorState extends UserState {}
+class ChangeUserPasswordSuccessState extends UserState {}
+class ChangeUserPasswordLoadingState extends UserState {}
+class ChangeUserPasswordErrorState extends UserState {}

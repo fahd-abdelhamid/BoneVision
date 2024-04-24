@@ -3,6 +3,7 @@ import 'package:bonevision/bloc/register_cubit.dart';
 import 'package:bonevision/bloc/user/user_cubit.dart';
 import 'package:bonevision/component/custom_button.dart';
 import 'package:bonevision/component/custom_form_text_field.dart';
+import 'package:bonevision/screens/forgot_password_screen.dart';
 import 'package:bonevision/screens/home_screen.dart';
 import 'package:bonevision/screens/register_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -135,7 +136,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPasswordScreen()));
+                },
                 child: Text(
                   "Forgot your password?",
                   style: GoogleFonts.prompt(
@@ -146,7 +149,33 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   Container(
                     child: GFIconButton(size: 40,
-                      onPressed: (){},
+                      onPressed: ()async{
+                        try {
+                          final user = await cubit.signInWithFacebook();
+                          print(user!.email);
+                          await cubit.doesEmailExist(user.email!);
+                          if (cubit.isExist == true) {
+                            await UserCubit.get(context).getUserData();
+                            await UserCubit.get(context).receiverUserData();
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen()));
+                          } else if (cubit.isExist == false) {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        RegisterScreen(
+                                          user: user,
+                                        )));
+                          }
+                        } on FirebaseAuthException catch (error) {
+                          print(error.message);
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
                       icon: Icon(Icons.facebook),shape: GFIconButtonShape.circle),),
                     Container(
                       child: GFIconButton(size: 40,

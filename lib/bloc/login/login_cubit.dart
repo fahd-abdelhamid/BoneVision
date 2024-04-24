@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 part 'login_state.dart';
@@ -65,5 +66,21 @@ class LoginCubit extends Cubit<LoginState> {
     print(querySnapshot.docs.isNotEmpty);
     isExist=querySnapshot.docs.isNotEmpty;
 
+  }
+  Future resetUserPassword(String email)async{
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email).then((value) => print("success"));
+  }
+  Future<User?> signInWithFacebook() async {
+    try {
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+      final OAuthCredential facebookAuthCredential =
+      FacebookAuthProvider.credential(loginResult.accessToken!.token);
+      final userCredential = await FirebaseAuth.instance
+          .signInWithCredential(facebookAuthCredential);
+      return userCredential.user;
+    } on FirebaseAuthException catch (e) {
+      print(e.message);
+      return null;
+    }
   }
 }

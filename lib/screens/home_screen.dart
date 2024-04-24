@@ -4,6 +4,7 @@
   import 'package:bonevision/component/custom_button.dart';
   import 'package:bonevision/screens/images_screen.dart';
   import 'package:bonevision/screens/profile_screen.dart';
+import 'package:bonevision/screens/settings_screen.dart';
   import 'package:bonevision/screens/support_screen.dart';
   import 'package:convex_bottom_bar/convex_bottom_bar.dart';
   import 'package:flutter/material.dart';
@@ -92,7 +93,9 @@
                   screenWidth: 200.w,
                   screenHeight: 40.h,
                   text: "Settings",
-                  onpressed: () {},
+                  onpressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>SettingsScreen()));
+                  },
                   bColor: Color(0xffd9d9d9),
                   tColor: Color(0xff232425),
                   fontSize: 20.w,

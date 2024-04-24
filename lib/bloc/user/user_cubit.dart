@@ -83,4 +83,33 @@ class UserCubit extends Cubit<UserState> {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
+  changeUserPassword(oldPassword, newPassword) {
+    emit(ChangeUserPasswordLoadingState());
+    AuthCredential credential = EmailAuthProvider.credential(
+        email: user!.email!, password: oldPassword);
+    user!.reauthenticateWithCredential(credential)
+        .then((_) {
+      user!.updatePassword(newPassword).then((_) {
+        print('Password updated successfully');
+        updateUserPassword(newPassword);
+        emit(ChangeUserPasswordSuccessState());
+      }).catchError((error) {
+        print('Error updating password: $error');
+        emit(ChangeUserPasswordErrorState());
+      });
+    }).catchError((error) {
+      print('Error re-authenticating user: $error');
+      emit(ChangeUserPasswordErrorState());
+    });
+  }
+  updateUserPassword(newPassword) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: user!.email)
+        .get().then((QuerySnapshot querySnapshot) {
+      var doc = querySnapshot.docs.first;
+      doc.reference.update({'password': newPassword}).then((value) => print("Password Updated Successfully"))
+          .catchError((error)=>print("Failed To Update Password"));
+    });
+  }
 }
