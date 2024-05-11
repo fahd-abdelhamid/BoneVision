@@ -1,4 +1,5 @@
 import 'package:bonevision/bloc/help_center/helpcenter_cubit.dart';
+import 'package:bonevision/bloc/login/login_cubit.dart';
 import 'package:bonevision/bloc/user/user_cubit.dart';
 import 'package:bonevision/component/chat_list.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +7,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SupportChatScreen extends StatefulWidget {
-  const SupportChatScreen({super.key});
+  final VoidCallback? onNavigate;
 
+  const SupportChatScreen({Key? key, this.onNavigate}) : super(key: key);
   @override
   State<SupportChatScreen> createState() => _SupportChatScreenState();
 }
@@ -17,20 +19,21 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
   void initState() {
     HelpcenterCubit.get(context).getUserData();
     HelpcenterCubit.get(context)
-        .receiveMessage(UserCubit.get(context).user!.email!);
+        .receiveMessage(LoginCubit.get(context).user!.email!);
     super.initState();
   }
   var messageController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     var cubit = HelpcenterCubit.get(context);
-    return Scaffold(
+    return Scaffold(bottomNavigationBar: null,
       appBar: AppBar(
       backgroundColor: Color(0xff21be44),
       title: Text("Doctor",style: GoogleFonts.prompt(color:Color(0xffFAFAFA)),),
       centerTitle: true,
       leading: IconButton(
         onPressed: () {
+          UserCubit.get(context).showNavTrue();
           Navigator.of(context).pop();
         },
         icon: Icon(

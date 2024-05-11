@@ -11,3 +11,7 @@ class LoginErrorState extends LoginState {
 
   LoginErrorState(this.error);
 }
+class GetUserDataState extends LoginState {}
+class ReceiveUserNameSuccessState extends LoginState {}
+class ReceiveUserNameLoadingState extends LoginState {}
+class ReceiveUserNameErrorState extends LoginState {}

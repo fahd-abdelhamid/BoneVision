@@ -38,8 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, state) async {
         if (state is LoginSuccessState) {
-          await UserCubit.get(context).getUserData();
-          await UserCubit.get(context).receiverUserData();
+          await cubit.getUserData();
+          await cubit.receiverUserData();
           RegisterCubit.get(context)
               .showSnackBar(context, "Logged in Successfully");
           Navigator.push(
@@ -50,6 +50,11 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       },
       builder: (context, state) {
+        if (state is ReceiveUserNameLoadingState || state is LoginLoadingState){
+          return Scaffold(body: Center(
+            child: CircularProgressIndicator()
+          ),);
+        }
         return Scaffold(
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0.w),
@@ -155,8 +160,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           print(user!.email);
                           await cubit.doesEmailExist(user.email!);
                           if (cubit.isExist == true) {
-                            await UserCubit.get(context).getUserData();
-                            await UserCubit.get(context).receiverUserData();
+                            await cubit.getUserData();
+                            await cubit.receiverUserData();
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -186,8 +191,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               print(user!.email);
                               await cubit.doesEmailExist(user.email!);
                               if (cubit.isExist == true) {
-                                await UserCubit.get(context).getUserData();
-                                await UserCubit.get(context).receiverUserData();
+                                await cubit.getUserData();
+                                await cubit.receiverUserData();
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

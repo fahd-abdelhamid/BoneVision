@@ -12,6 +12,12 @@ class LoginCubit extends Cubit<LoginState> {
   static LoginCubit get(context) => BlocProvider.of(context);
   String? error;
   bool? isExist;
+  String? userEmail;
+  String? userName;
+  String? gender;
+  String? password;
+  User? user;
+  Timestamp? date;
   signInWithEmail(email,password)async{
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -32,7 +38,44 @@ class LoginCubit extends Cubit<LoginState> {
       }
     }
   }
+  getUserData() {
+    emit(LoginLoadingState());
+    try {
+      user = FirebaseAuth.instance.currentUser;
+      print(user?.email ?? "de7ka");
+      emit(GetUserDataState());
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+
+  Future receiverUserData() async {
+    emit(ReceiveUserNameLoadingState());
+    try {
+      QuerySnapshot<
+          Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .where("email", isEqualTo: user!.email!)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        userName = querySnapshot.docs.first.get("username");
+        gender=querySnapshot.docs.first.get("gender");
+        password=querySnapshot.docs.first.get("password");
+        date=querySnapshot.docs.first.get("date");
+        emit(ReceiveUserNameSuccessState());
+        print("de7k");
+        print(date);
+      } else {
+        emit(ReceiveUserNameErrorState());
+        print("error");
+      }
+    } catch (e) {
+      emit(ReceiveUserNameErrorState());
+      print(e);
+    }
+  }
   Future<User?> googleSignin() async {
+    emit(LoginLoadingState());
     try {
       final googleSignIn = GoogleSignIn(scopes: ['email']);
 
@@ -50,6 +93,7 @@ class LoginCubit extends Cubit<LoginState> {
 
         final userCredential =
         await FirebaseAuth.instance.signInWithCredential(credential);
+
         return userCredential.user;
       } else {
         return null;
@@ -60,11 +104,16 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
   doesEmailExist(String email) async {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    emit(LoginLoadingState());
+    try {
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-    QuerySnapshot querySnapshot = await users.where('email', isEqualTo: email).get();
-    print(querySnapshot.docs.isNotEmpty);
-    isExist=querySnapshot.docs.isNotEmpty;
+      QuerySnapshot querySnapshot = await users.where('email', isEqualTo: email).get();
+      print(querySnapshot.docs.isNotEmpty);
+      isExist=querySnapshot.docs.isNotEmpty;
+    } on Exception catch (e) {
+      print(e);
+    }
 
   }
   Future resetUserPassword(String email)async{

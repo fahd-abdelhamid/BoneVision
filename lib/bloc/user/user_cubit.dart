@@ -12,14 +12,16 @@ part 'user_state.dart';
 class UserCubit extends Cubit<UserState> {
   UserCubit() : super(UserInitial());
   static UserCubit get(context) => BlocProvider.of(context);
-  String? userEmail;
-  String? userName;
-  String? gender;
-  String? password;
-  User? user;
   XFile? file;
-  Timestamp? date;
-
+  bool showNav=true;
+  showNavFalse(){
+    showNav=false;
+    emit(ShowNavFalseState());
+  }
+  showNavTrue(){
+    showNav=true;
+    emit(ShowNavFalseState());
+  }
   DateTime timestampToDateTime(Timestamp timestamp) {
     return timestamp.toDate();
   }
@@ -35,45 +37,18 @@ class UserCubit extends Cubit<UserState> {
     return age;
   }
 
-  getUserData() {
-    user = FirebaseAuth.instance.currentUser;
-    print(user?.email ?? "de7ka");
-    emit(GetUserDataState());
-  }
-
-  Future receiverUserData() async {
-    emit(ReceiveUserNameLoadingState());
-    try {
-      QuerySnapshot<
-          Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
-          .collection("users")
-          .where("email", isEqualTo: user!.email!)
-          .get();
-      if (querySnapshot.docs.isNotEmpty) {
-        userName = querySnapshot.docs.first.get("username");
-        gender=querySnapshot.docs.first.get("gender");
-        password=querySnapshot.docs.first.get("password");
-        date=querySnapshot.docs.first.get("date");
-        emit(ReceiveUserNameSuccessState());
-        print("de7k");
-        print(date);
-      } else {
-        emit(ReceiveUserNameErrorState());
-        print("error");
-      }
-    } catch (e) {
-      emit(ReceiveUserNameErrorState());
-      print(e);
-    }
-  }
-
   pickImage() async {
-    final ImagePicker imagePicker = ImagePicker();
-    file = await imagePicker.pickImage(source: ImageSource.gallery);
-    if (file != null) {
-      return await file!.readAsBytes();
-    } else {
-      print("No Image Selected");
+    try {
+      final ImagePicker imagePicker = ImagePicker();
+      file = await imagePicker.pickImage(source: ImageSource.gallery);
+      if (file != null) {
+        emit(PickImageSuccess());
+        return await file!.readAsBytes();
+      } else {
+        print("No Image Selected");
+      }
+    } on Exception catch (e) {
+      // TODO
     }
   }
 
@@ -82,14 +57,15 @@ class UserCubit extends Cubit<UserState> {
     await auth.signOut();
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+  emit(UserLogOutState());
   }
   changeUserPassword(oldPassword, newPassword) {
     emit(ChangeUserPasswordLoadingState());
     AuthCredential credential = EmailAuthProvider.credential(
-        email: user!.email!, password: oldPassword);
-    user!.reauthenticateWithCredential(credential)
+        email: FirebaseAuth.instance.currentUser!.email!, password: oldPassword);
+    FirebaseAuth.instance.currentUser!.reauthenticateWithCredential(credential)
         .then((_) {
-      user!.updatePassword(newPassword).then((_) {
+      FirebaseAuth.instance.currentUser!.updatePassword(newPassword).then((_) {
         print('Password updated successfully');
         updateUserPassword(newPassword);
         emit(ChangeUserPasswordSuccessState());
@@ -105,7 +81,7 @@ class UserCubit extends Cubit<UserState> {
   updateUserPassword(newPassword) {
     FirebaseFirestore.instance
         .collection('users')
-        .where('email', isEqualTo: user!.email)
+        .where('email', isEqualTo: FirebaseAuth.instance.currentUser!.email)
         .get().then((QuerySnapshot querySnapshot) {
       var doc = querySnapshot.docs.first;
       doc.reference.update({'password': newPassword}).then((value) => print("Password Updated Successfully"))
